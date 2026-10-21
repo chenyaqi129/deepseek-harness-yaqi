@@ -126,8 +126,9 @@ describe('lifebase CLI (synthetic demo library)', { skip: !executable || !demo }
     assert.equal(result.data.query, '--data-dir=/nonexistent')
   })
 
-  it('cannot reach a non-synthetic library from cloud', { skip: !process.env.LIFEBASE_PERSONAL_DATA_DIR }, () => {
-    const argv = buildArgv(executable!, process.env.LIFEBASE_PERSONAL_DATA_DIR!, 'topics', {}, 'cloud')
-    assert.throws(() => call(argv), /EGRESS_BLOCKED/)
+  // Lifebase ADR-021: chat sources are cloud_ok, so the personal library answers in cloud.
+  it('reaches the personal library from cloud under the cloud_ok chat policy', { skip: !process.env.LIFEBASE_PERSONAL_DATA_DIR }, () => {
+    const argv = buildArgv(executable!, process.env.LIFEBASE_PERSONAL_DATA_DIR!, 'topics', { limit: 1 }, 'cloud')
+    assert.equal(call(argv).status, 'ok')
   })
 })
