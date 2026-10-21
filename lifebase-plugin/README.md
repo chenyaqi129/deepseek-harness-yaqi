@@ -1,7 +1,7 @@
 # Lifebase tools (local plugin)
 
 Read-only DeepSeek Harness tools over the Lifebase HumanOS JSON CLI
-(api_version 1): `lifebase_topics`, `lifebase_search`, `lifebase_timeline`, `lifebase_evidence`,
+(api_version 1): `lifebase_topics`, `lifebase_conversations`, `lifebase_search`, `lifebase_timeline`, `lifebase_evidence`,
 `lifebase_context`. Lifebase owns the contract and egress policy; this directory only adapts it.
 
 - The executable, data directory, and destination come from plugin config; the model supplies

@@ -1,7 +1,7 @@
 /**
  * Lifebase read-only tools for DeepSeek Harness.
  *
- * Wraps the Lifebase HumanOS JSON CLI (api_version 1) as five tools. The data
+ * Wraps the Lifebase HumanOS JSON CLI (api_version 1) as six tools. The data
  * directory, executable, and destination are plugin-owned: the model only
  * supplies query text and filters. Destination comes from the agent's actual
  * provider route and fails closed to `cloud`; Lifebase enforces source egress
@@ -59,6 +59,7 @@ const filters = {
   until: text('Exclusive upper bound: ISO date (UTC midnight) or timestamp with timezone'),
   limit: { type: 'integer', description: 'Maximum matches (default 10)' },
 } as const
+const offset = { type: 'integer', description: 'Skip this many results; pass next_offset from the previous page' } as const
 
 const TOOLS: readonly {
   op: Operation
@@ -71,14 +72,22 @@ const TOOLS: readonly {
     parameters: { source: filters.source, limit: { ...filters.limit, description: 'Maximum topics (1–100)' } },
   },
   {
+    op: 'conversations',
+    description: 'List the user\'s archived conversations, most recent first: title, time span, message counts and top '
+      + 'topics, without message text. Start here to see what exists, read one with lifebase_timeline, and '
+      + 'page through all of them with offset/next_offset instead of guessing keywords.',
+    parameters: { source: filters.source, since: filters.since, until: filters.until,
+      limit: { ...filters.limit, description: 'Maximum conversations per page (1–100)' }, offset },
+  },
+  {
     op: 'search',
     description: 'Search the user\'s archived chat messages by keyword topics. Returns excerpts with evidence locators.',
     parameters: { query: { ...text('Keywords to search for'), required: true }, ...filters },
   },
   {
     op: 'timeline',
-    description: 'List messages of one archived conversation in time order.',
-    parameters: { conversation: { ...text('conversation_id from a previous result'), required: true }, ...filters },
+    description: 'List messages of one archived conversation in time order. Page long conversations with offset/next_offset.',
+    parameters: { conversation: { ...text('conversation_id from a previous result'), required: true }, ...filters, offset },
   },
   {
     op: 'evidence',
