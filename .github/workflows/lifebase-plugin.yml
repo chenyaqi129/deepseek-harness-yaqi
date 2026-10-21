@@ -1,0 +1,36 @@
+name: Lifebase plugin
+
+# Fork-only check for lifebase-plugin/. Its tests use Node's built-in runner and
+# import nothing from the workspace, so no install or build is needed. The
+# real-CLI suite self-skips here because LIFEBASE_* variables are never set in
+# CI; personal data must not reach this public repository.
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'lifebase-plugin/**'
+      - '.github/workflows/lifebase-plugin.yml'
+  pull_request:
+    paths:
+      - 'lifebase-plugin/**'
+      - '.github/workflows/lifebase-plugin.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: node --test
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+      - run: node --test lifebase-plugin/tests/
