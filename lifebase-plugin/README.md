@@ -29,5 +29,5 @@ Tests use Node's built-in runner and need no workspace build. Set the variables 
 end-to-end checks against a real CLI:
 
 ```sh
-LIFEBASE_EXECUTABLE=... LIFEBASE_DEMO_DATA_DIR=... LIFEBASE_PERSONAL_DATA_DIR=... node --test lifebase-plugin/tests/
+LIFEBASE_EXECUTABLE=... LIFEBASE_DEMO_DATA_DIR=... LIFEBASE_PERSONAL_DATA_DIR=... node --test 'lifebase-plugin/tests/**/*.test.ts'
 ```

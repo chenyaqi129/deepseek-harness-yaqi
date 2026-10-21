@@ -33,4 +33,5 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: '24'
-      - run: node --test lifebase-plugin/tests/
+      # Node 24 does not expand a directory argument; pass a glob it expands itself.
+      - run: node --test 'lifebase-plugin/tests/**/*.test.ts'
